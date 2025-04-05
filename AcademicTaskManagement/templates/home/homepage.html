@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<style>
+    
+
+    .navbar {
+      background-color: #FFD1DF;
+    }
+
+    .navbar-brand, .nav-link {
+      color: rgb(247, 185, 214) !important;
+    }
+
+    .navbar-toggler-icon {
+      background-color: rgb(247, 185, 214);
+    }
+
+    .card {
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(230, 21, 160, 0.1);
+    }
+
+    .card-title {
+      color: #8d5163;
+      font-weight: bold;
+    }
+
+    .card-body {
+      background-color: #ffffff;
+      border-radius: 10px;
+    }
+
+    .card-text {
+      color: #8d5163;
+    }
+
+    .btn-primary {
+      background-color: #fd76c9;
+      border-color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #ee4baa;
+      border-color: #ee4baa;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin-top: 30px;
+    }
+    .profileImg{
+        border-radius: 60%;
+        height: 80px;
+        width: 80px;
+    }
+    .bgText{
+        color: #8d5163;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .bgTextShade{
+        color: #8d5163;
+        font-size: 15px;
+    }
+  </style>
+
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- profile & notification -->
+
+    <div class="row">
+        <div class="col-1">
+            <img class="profileImg" src="{% static 'images/books.jpg' %}" alt="profile image">
+        </div>
+        <div class="col-4">
+          {% if student %} 
+            <span class="bgText" style=" margin-top: 14px; width: 100%; float: left;">{{ student.signUp_details.name }} {{ student.signUp_details.surname }}</span>
+           {% else %}
+           <span class="bgText" style=" margin-top: 14px; width: 100%; float: left;">Name Surname</span>
+            {% endif %}
+            <span class="bgTextShade" style="float: left;">Welcome back</span>
+        </div>
+
+    
+        <div class="col-4">
+          {% if taskCreated %} 
+          <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div>
+              {{ taskCreated }}
+            </div>
+          </div>
+         {% endif %}
+        </div>
+        <div class="col-2 text-end">
+            <img class="" src="{% static 'images/notification.png' %}" alt="profile image" height="45" width="55" style="margin-top: 15px;">
+        </div>
+        <div class="col-1" style="margin-top: 11px;">
+            <a href="" style="font-size: 40px; color: gray; " data-bs-toggle="modal" data-bs-target="#logoutModal"><i  class="bi bi-box-arrow-right"></i></a>
+        </div>
+    </div>
+    <!-- LOGOUT Form -->
+    <form action="{% url 'logout' %}" method="POST"> {% csrf_token %}
+    <div  class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- BOdy  -->
+                <div class="modal-body">
+                    <p class="text-danger">Are you sure you want to logout?</p>
+                </div>
+                <!-- End of body -->
+                 <!-- footer start -->
+                <div class="modal-footer">
+                    <a href="../logout" type="submit" class="btn btn-danger">logout</a>
+                </div>
+                <!-- footer end -->
+            </div>
+        </div>
+    </div>
+    </form>
+    <!-- This is the task overview -->
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-2 bgText" style="font-weight: bold;" >Create Task</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-sm-10">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"> <i class="bi bi-pencil-square"></i>   Task Entry</h5>
+              <p class="card-text">To enter a task click "create".</p>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#myModal"  class="btn btn-primary" >Create</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <form action="{% url 'home_page' %}" method="POST"> {% csrf_token %}
+      <div  class="modal fade " id="myModal"  aria-labelledby="modalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="modalLabel">Create a New Task</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  
+                  <!-- BOdy  -->
+                  
+                  <div class="modal-body">
+                      <div class="mb-3">
+                          <label for="taskType" class="form-label">Task type</label>
+                          <select clas="form-select" name="taskOptions" aria-label="Task type" id="taskType" required>
+                              <option value="" selected>Choose a task</option>
+                              <option value="Assignment">Assignment</option>
+                              <option value="Test">Test</option>
+                              <option value="Sports">Sports</option>
+                              <option value="Event">Event</option>
+                          </select>
+
+                      </div>
+                      <div class="mb-3">
+                          <label for="taskTitle"  class="form-label">Task Tittle</label>
+                          <input class="form-control" type="text" name="taskTitle" id="taskTitle" placeholder="Enter task tittle" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="dueDate"  class="form-label">Due Date</label>
+                          <input class="form-control" name="taskDueDate" type="date" id="dueDate" placeholder="Enter task tittle">
+                      </div>
+                      <div class="mb-3">
+                          <label for="taskDesc"  class="form-label">Task Description</label>
+                          <textarea class="form-control" name="taskDesc" id="taskDesc" placeholder="describe ... " rows="4"></textarea>
+                      </div>
+                      <div class="mb-3 form-check form-switch">
+                          <input class="form-check-input" name="taskReminder" type="checkbox" id="reminder" checked>
+                          <label for="reminder" class="form-check-label">Do you want to be reminded?</label>
+                      </div>
+                      <div class="mb-3">
+                          <label for="formFileMultiple" class="form-label">Enter Task file</label>
+                          <input class="form-control" name="taskfile" type="file" id="formFileMultiple" disabled>
+                      </div>
+                
+
+                  </div>
+                  <!-- End of body -->
+                    <!-- footer start -->
+                  <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                  
+                  <!-- footer end -->
+                </div>
+                
+              </div>
+      </div>
+    </form>
+
+<!-- This is the task overview -->
+ <div class="row">
+    <div class="col-1"></div>
+    <div class="col-2 bgText" style="font-weight: bold;" >Task Overview</div>
+ </div>
+
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="col col-sm-6 col-lg-5">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"> <i class="bi bi-postcard-heart"></i>  Daily Summary</h5>
+            <p class="card-text">UpComing Tasks.</p>
+            <a href="#" class="btn btn-primary">View Summary</a>
+          </div>
+        </div>
+      </div>
+      <div class="col col-sm-6 col-lg-5">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-card-checklist"></i>   TO-DO!</h5>
+            <p class="card-text">UnStarted Tasks.</p>
+            <a href="../calender_page" class="btn btn-primary">View TO-Dos!</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-1"></div>
+        <div class="col col-sm-6 col-lg-5">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-hourglass-split"></i>   In Progress</h5>
+              <p class="card-text">Started Tasks.</p>
+              <a href="#" class="btn btn-primary">View Progress</a>
+            </div>
+          </div>
+        </div>
+        <div class="col col-sm-6 col-lg-5">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-check-circle-fill"></i>  Completed</h5>
+              <p class="card-text">Compled Tasks.</p>
+              <a href="#" class="btn btn-primary">Check Tasks</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+
+  {% endblock %}

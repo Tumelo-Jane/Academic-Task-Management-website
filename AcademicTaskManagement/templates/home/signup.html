@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+      
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .signup-card {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 400px;
+        height: 610px;
+        margin-top: 50px;
+    }
+    .form-control {
+        border-radius: 10px;
+    }
+    
+    .btn-signup {
+        background-color: #f322bf;
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 16px;
+        color: white;
+        font-weight: bold;
+    }
+    .btn-signup:hover {
+        background-color: #f80fd1;
+    }
+    .text-center a {
+        text-decoration: none;
+        font-weight: bold;
+        color: #fd0fc2;
+    }
+</style>
+
+<div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+    <div class="row gx-lg-5 align-items-center mb-5">
+      <div class="col-lg-7 mb-5 mb-lg-0" style="z-index: 10">
+        <img class="profileImg" src="{% static 'images/signupcom.png' %}" alt="profile image"  height="750" width="650">
+      </div>
+
+<div class="col-5">
+<div class="signup-card">
+    <h3 class="mb-4">Create a New Account</h3>
+    <form action="" method="POST"> {% csrf_token %}
+        <div class="mb-3">
+            <label for="example" class ="form-label">Full name/s</label>
+            <input type="text" class="form-control" name="name" id="formGroupExampleInput" placeholder="Tumelo Jane" required>
+        </div>
+        <div class="mb-3">
+            <label for="example" class ="form-label">Surname</label>
+            <input type="text" class="form-control" name="surname" placeholder="Maluleke" required>
+        </div>
+        <div class="mb-3">
+            <label for="example" class ="form-label">Email address</label>
+            <input type="email" class="form-control" name="username" placeholder="tumelo@gmail.com" required>
+        </div>
+        <div class="mb-3">
+            <label for="example" class ="form-label">Password</label>            
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
+        </div>
+        <div class="mb-3">
+            <label for="example" class ="form-label">Confirm password</label>
+            <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" required>
+            {% if passwordErr %}
+            <div class="text-center" style="color: red;">{{ passwordErr }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-signup w-100 text-center">Sign Up</button>
+    </form>
+    <p class="mt-3 text-center">Already have an account? <a href="../logIn_page">Log in</a></p>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

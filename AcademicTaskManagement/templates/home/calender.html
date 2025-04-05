@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<head>
+    <title>Calendar Task UI</title>
+
+    <!-- Tailwind CSS (for layout and design) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-2" >
+                <a href="../../../home/home_page" style="font-size: 40px;"><i  class="bi bi-arrow-left-circle"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center mt-10 space-x-1">
+        <!-- Calendar Box -->
+        <div class="max-w-xl p-4 bg-white rounded-xl shadow-md">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+                <button class="bi bi-arrow-left" id="prevMonth"></button>
+                <h2 id="monthTitle" class="text-xl font-semibold"></h2>
+                <button class="text-lg" id="nextMonth"><i class="bi bi-arrow-right"></i></button>
+            </div>
+
+            <!-- Date Navigation -->
+            <div id="calendarDays" class="grid grid-cols-7 gap-4 text-gray-500 text-sm mb-4">
+                <!-- Days of the week will go here -->
+            </div>
+        </div>
+
+        <!-- Tasks Box -->
+        <div class="max-w-lg w-full p-4 bg-white rounded-xl shadow-md">
+            <!-- Section Title -->
+            <h3 class="text-lg font-semibold mb-3">Today's Tasks</h3>
+            
+              {% for t in tasks %}
+           
+            <form  action="{% url 'delete_task' task_id=t.id %}" method="POST"> {% csrf_token %}
+                <div class="col col-sm-11 col-lg-11">
+                    <div class="card">
+                    <div class="card-body">
+                        <input type="text" style="display: none;" name="id" disabled value="{{ t.id }}">
+                        <h5 class="card-title"> <i class="bi bi-postcard-heart"></i>  {{ t.taskTittle }} ({{ t.taskType }})</h5>
+                        <div class="card-text">
+                            <ul>
+                                <li>
+                                    <strong></strong> <br>
+                                    Due: {{ t.subDate }}
+                                </li>
+                                <li>
+                                    Description: {{ t.taskDesc }}
+                                </li>
+                                <li>
+                                    Reminder: {{ t.taskReminder }}
+                                </li>
+                            </ul>
+                        </div>
+                        <button href="" class="btn btn-primary">Delete</button>
+                    </div>
+                    </div>
+                </div>
+            </form>
+              {% empty %}
+                <li>No tasks yet.</li>
+              {% endfor %}
+            <!-- Tasks will be added here dynamically -->
+            <div id="taskCards" class="space-y-4"></div>
+        </div>
+
+    </div>
+
+<script>
+// Calendar Logic
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const taskData = {
+    17: [
+        { time: "08:00 AM", title: "Create Wireframe", description: "SaaS Landing page" },
+        { time: "11:00 AM", title: "Prototype", description: "Ecommerce website prototype" }
+    ],
+    18: [
+        { time: "02:00 PM", title: "Assets", description: "Website home page assets" },
+        { time: "04:00 PM", title: "Animation", description: "Prototype page animation" }
+    ],
+};
+
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+function renderCalendar() {
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+    
+    const daysInMonth = lastDayOfMonth.getDate();
+    const startDay = firstDayOfMonth.getDay(); // Day of the week for the 1st day of the month
+    
+    // Clear existing calendar days
+    const calendarDays = document.getElementById('calendarDays');
+    calendarDays.innerHTML = "";
+
+    // Render days of the week
+    const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    weekDays.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('text-center');
+        dayElement.innerText = day;
+        calendarDays.appendChild(dayElement);
+    });
+
+    // Render days of the month
+    for (let i = 0; i < startDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.classList.add('text-center');
+        calendarDays.appendChild(emptyDay);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('text-center', 'cursor-pointer', 'hover:bg-gray-200', 'p-2', 'rounded');
+        
+
+        dayElement.innerHTML = `${day}<div class="text-xs text-gray-500">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][(startDay + day - 1) % 7]}</div>`;
+        dayElement.onclick = () => showTasksForDay(day);
+        
+        calendarDays.appendChild(dayElement);
+    }
+
+    // Set month title
+    document.getElementById('monthTitle').innerText = `${monthNames[currentMonth]} ${currentYear}`;
+}
+
+
+document.getElementById('prevMonth').addEventListener('click', () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    renderCalendar();
+});
+
+document.getElementById('nextMonth').addEventListener('click', () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar();
+});
+
+renderCalendar();
+
+</script>
+
+</body>
+{% endblock %}
